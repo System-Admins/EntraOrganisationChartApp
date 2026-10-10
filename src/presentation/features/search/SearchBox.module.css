@@ -1,0 +1,165 @@
+.search {
+  position: relative;
+  flex: 1 1 220px;
+  /* Room to type a name at the touch text size, wherever the header puts the field. */
+  min-width: 150px;
+  max-width: 420px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--muted-text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: text;
+}
+
+/* The input has the focus but the field looks like the control, so the ring goes around the field. */
+.field:focus-within {
+  border-color: var(--accent);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.field input {
+  flex: 1;
+  align-self: stretch;
+  /* An input's own width (20 characters) would be the narrowest the field, and so the header, can get. */
+  width: 0;
+  padding: 0;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+/* iOS zooms the page into inputs whose text is smaller than 16px. */
+@media (pointer: coarse) {
+  .field input {
+    font-size: calc(16px * var(--text-scale));
+  }
+}
+
+/* No `top`: the list keeps its place in the flow, right below the field, whatever it is positioned against. */
+.results {
+  /* The header sets the ring colour for its own background; the list lies on the surface again. */
+  --focus-ring: var(--text);
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 6px 0 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+
+/* Stays above the options as they scroll. */
+.count {
+  margin: 0;
+  padding: 8px 12px 2px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* Positioned, so that the options' offsets, which keep the active one in view, are measured from here. */
+.options {
+  position: relative;
+  max-height: min(60vh, 420px);
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* Unpositioned, the field lets the list span the page, inside the header's padding. */
+@media screen and (max-width: 640px) {
+  .search {
+    position: static;
+  }
+
+  .results {
+    left: 8px;
+    right: 8px;
+  }
+}
+
+/* The small photo beside the name and the line of details. */
+.option {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.option > :first-child {
+  grid-row: span 2;
+}
+
+/* Before anything is typed: the signed-in user and their manager, then the people opened lately. */
+.group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A group's name, in the size and colour of the count of matches. */
+.groupName {
+  padding: 8px 8px 2px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+/* Show all and Clear recent: a line of its own, in the accent like a link, as tall as every other target (44px). */
+.all {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--accent-text);
+}
+
+/* The active option gets the focus ring. Inset: the tint alone is 1.1:1 and forced colours drop backgrounds. */
+.option[aria-selected='true'] {
+  background: var(--hover);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/* Highlight can be pale in a forced palette, so a border in the text colour goes around the ring. */
+@media (forced-colors: active) {
+  .option[aria-selected='true'] {
+    padding: 4px 6px;
+    border: 2px solid CanvasText;
+    outline-color: Highlight;
+    outline-offset: -4px;
+  }
+}
+
+.name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.detail {
+  overflow: hidden;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  padding: 10px 12px;
+  color: var(--muted-text);
+}

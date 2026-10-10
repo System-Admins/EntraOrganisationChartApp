@@ -1,0 +1,23 @@
+{
+  "_about": "Shares as little as possible: no presence or calendars (only User.Read.All needed), no copy kept in the browser, no CSV export or health report.",
+  "dataSource": "graph",
+  "auth": {
+    "tenantId": "00000000-0000-0000-0000-000000000000",
+    "clientId": "00000000-0000-0000-0000-000000000000"
+  },
+  "chart": {
+    "topPersons": ["ceo@contoso.com"],
+    "showPresence": false,
+    "showWorkLocation": false,
+    "showWorkingHours": false
+  },
+  "directory": {
+    "cacheInBrowser": false
+  },
+  "export": {
+    "enabled": false
+  },
+  "reports": {
+    "enabled": false
+  }
+}

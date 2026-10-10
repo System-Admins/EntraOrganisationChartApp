@@ -1,0 +1,25 @@
+/* Under the line that counts a department's or a city's people, in the look of Back: a link to the rest of the team, 44px tall. */
+.wholeTeam {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -12px 0 4px -4px;
+  padding: 0 4px;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .wholeTeam:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Reaching the people listed comes before how they are shown; no gap while there are no tiles yet, only the copy's live region. */
+.contact:has(> div) {
+  margin-bottom: 16px;
+}

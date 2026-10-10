@@ -1,0 +1,16 @@
+{
+  "_about": "A fictitious company, no sign-in or app registration needed. For trying the app and for screenshots.",
+  "dataSource": "demo",
+  "chart": {
+    "topPersons": [
+      "ingrid.solberg@contoso.com",
+      "erik.haugen@contoso.com",
+      "maria.garcia@contoso.com",
+      "jonas.berg@contoso.com"
+    ],
+    "expandDepth": 1
+  },
+  "branding": {
+    "title": "Contoso organization chart"
+  }
+}

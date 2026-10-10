@@ -1,0 +1,36 @@
+/* `left` is set by useTooltip. The transparent border outlines the tooltip where forced colours drop its background. */
+.tip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 3px 8px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--surface);
+  text-align: left;
+  white-space: normal;
+  background: var(--text);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: default;
+}
+
+/* Fills the gap to the button, so the pointer stays over the button on its way onto the tooltip. */
+.tip::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 7px;
+}
+
+@media print {
+  .tip {
+    display: none;
+  }
+}

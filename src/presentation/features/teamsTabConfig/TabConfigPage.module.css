@@ -1,0 +1,116 @@
+.page {
+  max-width: 520px;
+  padding: 16px 20px;
+}
+
+.page p {
+  margin: 0 0 12px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: calc(18px * var(--text-scale));
+  font-weight: 600;
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+/* The levels come after the top persons, as a setting of their own. */
+.depth {
+  margin-top: 20px;
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 6px;
+  padding: 0 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  /* The field's only visible edge that reaches 3:1 against the page (WCAG 1.4.11). */
+  border-bottom-color: var(--muted-text);
+  border-radius: 4px;
+}
+
+/* iOS zooms the page into inputs whose text is smaller than 16px. */
+@media (pointer: coarse) {
+  .input {
+    font-size: calc(16px * var(--text-scale));
+  }
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.hint {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* Said where the entries can't be saved, which is why Teams' Save is unavailable. */
+.error {
+  color: var(--warning);
+}
+
+.people {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.identifier {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  overflow-wrap: anywhere;
+}
+
+/* 44px for every pointer (WCAG 2.5.5); an edge in the secondary text colour, as --border is too faint for a button (WCAG 1.4.11). */
+.button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 6px;
+  padding: 0 16px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.person .button {
+  margin-bottom: 0;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    background: var(--hover);
+  }
+}

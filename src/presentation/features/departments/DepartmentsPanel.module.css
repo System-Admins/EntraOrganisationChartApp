@@ -1,0 +1,111 @@
+/* Under the line that counts the departments, in the look of Back: a text button in the links' accent, 44px tall. */
+.asChart {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -12px 0 4px -4px;
+  padding: 0 4px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* The departments of flagged branches stand apart under their headings, as the chart gathers those branches. */
+.group + .group,
+.without {
+  margin-top: 12px;
+}
+
+/* Small and muted, as the Team section's headings are. */
+.groupHeading {
+  margin: 0 0 4px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each level in from the department it is below. */
+.list .list {
+  padding-left: 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+/* A 44px target of its own; where nothing is below, the same room keeps the names in line. Its chevron sits near the panel's edge. */
+.toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -12px;
+  padding: 0;
+  color: var(--muted-text);
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* The name and its total on a line, a 44px target as the Team section's rows are. */
+.open {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 6px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* A name to press reads as the panel's links do. */
+.name {
+  color: var(--accent-text);
+  overflow-wrap: anywhere;
+}
+
+/* Beside the name of a department that comes higher up its path too. */
+.name svg {
+  margin-left: 6px;
+  vertical-align: -2px;
+  color: var(--warning);
+}
+
+.count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Underlined rather than tinted, as the panel's links are: the hover tint would lower the accent's contrast in the dark theme. */
+@media (hover: hover) {
+  .open:hover .name,
+  .asChart:hover {
+    text-decoration: underline;
+  }
+
+  .toggle:hover {
+    background: var(--hover);
+  }
+}

@@ -1,0 +1,36 @@
+/* The legend and both choices on one line, which wraps in a narrow panel. */
+.layouts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 16px;
+  min-width: 0;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+}
+
+/* Floated, a legend is laid out like the fieldset's other children, beside the choices, instead of on its border. */
+.legend {
+  float: left;
+  padding: 0;
+  font-weight: 600;
+}
+
+/* The whole label is the radio button's 44px target. */
+.layout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.layout input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent-text);
+  cursor: inherit;
+}

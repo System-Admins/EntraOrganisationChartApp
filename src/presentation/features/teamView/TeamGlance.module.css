@@ -1,0 +1,143 @@
+/* Three tiles to a row, two where the text size leaves a third too narrow for a number and its word; the spare pixel keeps rounding from dropping the third. */
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(calc(64px * var(--text-scale) + 20px), calc((100% - 17px) / 3)), 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A tint without the edge of the panel's buttons, as nothing here can be pressed; forced colours drop the tint and draw the transparent border. */
+.number {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 8px 10px;
+  background: var(--hover);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+}
+
+.value {
+  font-size: calc(20px * var(--text-scale));
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.unit {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* Small and muted, as the other headings of the Team section's blocks are. */
+.heading {
+  margin: 0 0 6px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+.shares {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Rows to press are 44px targets themselves, which space them already. */
+.pressable {
+  gap: 0;
+}
+
+/* The name and its count on a line, with the bar of its share under both. */
+.share {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  font-size: calc(13px * var(--text-scale));
+}
+
+/* Its text in line with the heading's, the target and the focus ring reaching a little past it on both sides. */
+.shareButton {
+  align-content: center;
+  width: calc(100% + 12px);
+  min-height: 44px;
+  margin: 0 -6px;
+  padding: 6px;
+  font-family: inherit;
+  line-height: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* A name to press reads as the panel's links do. */
+.shareButton .name {
+  color: var(--accent-text);
+}
+
+/* Underlined rather than tinted, as the panel's links are: the hover tint would lower the accent's contrast below 4.5:1 in the dark theme. */
+@media (hover: hover) {
+  .shareButton:hover .name,
+  .more:hover {
+    text-decoration: underline;
+  }
+}
+
+.name {
+  overflow-wrap: anywhere;
+}
+
+.count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filled in --accent-text, which keeps its contrast on the surface in every theme and branding, over the faintest of tracks. */
+.bar {
+  grid-column: 1 / -1;
+  height: 4px;
+  background: var(--hover);
+  border-radius: 2px;
+}
+
+/* At least a sliver, so that a share of one person in a large team still shows. */
+.fill {
+  display: block;
+  min-width: 2px;
+  height: 100%;
+  background: var(--accent-text);
+  border-radius: inherit;
+}
+
+/* The rest of the list on request: a text button in the links' accent, 44px like the rows, its text in line with theirs. */
+.more {
+  display: block;
+  min-height: 44px;
+  margin: 0 -6px;
+  padding: 0 6px;
+  font: inherit;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  text-align: left;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* Forced colours would paint the share in the colour of the background around it. */
+@media (forced-colors: active) {
+  .fill {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+}

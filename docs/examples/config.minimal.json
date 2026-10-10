@@ -1,0 +1,11 @@
+{
+  "_about": "The least a tenant needs. Everything else takes its default.",
+  "dataSource": "graph",
+  "auth": {
+    "tenantId": "00000000-0000-0000-0000-000000000000",
+    "clientId": "00000000-0000-0000-0000-000000000000"
+  },
+  "chart": {
+    "topPersons": ["ceo@contoso.com"]
+  }
+}

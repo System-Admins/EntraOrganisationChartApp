@@ -1,0 +1,44 @@
+/* An outlined surface filled in --accent-text, which keeps its contrast on the surface whatever the theme or branding; a border-coloured track would hide the fill where borders are light, as in the contrast theme. */
+.bar {
+  height: 8px;
+  appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.bar::-webkit-progress-bar {
+  background: var(--surface);
+  border-radius: 4px;
+}
+
+.bar::-webkit-progress-value {
+  background: var(--accent-text);
+  border-radius: 4px;
+}
+
+.bar::-moz-progress-bar {
+  background: var(--accent-text);
+  border-radius: 4px;
+}
+
+/* Forced colours would paint the bar and its track alike. */
+@media (forced-colors: active) {
+  .bar {
+    forced-color-adjust: none;
+    background: Canvas;
+    border: 1px solid CanvasText;
+  }
+
+  .bar::-webkit-progress-bar {
+    background: Canvas;
+  }
+
+  .bar::-webkit-progress-value {
+    background: Highlight;
+  }
+
+  .bar::-moz-progress-bar {
+    background: Highlight;
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "dataSource": "graph",
+  "auth": {
+    "tenantId": "<directory (tenant) ID>",
+    "clientId": "<application (client) ID>"
+  },
+  "chart": {
+    "topPersons": [
+      "ceo@contoso.com"
+    ],
+    "hide": {
+      "withoutManager": true,
+      "withHiddenManager": true,
+      "inManagerCycle": true,
+      "disabledAccounts": true,
+      "guests": true,
+      "unlicensed": true,
+      "withoutJobTitle": false,
+      "unattached": false
+    },
+    "expandDepth": 1,
+    "showPhotos": true,
+    "showPresence": true
+  },
+  "contact": {
+    "emailClient": "mailto"
+  },
+  "directory": {
+    "cacheInBrowser": true,
+    "refreshAfterMinutes": 60
+  },
+  "export": {
+    "enabled": true,
+    "csvSeparator": ";"
+  },
+  "theme": "auto",
+  "branding": {
+    "title": "Organization chart",
+    "logoUrl": "/branding/logo.svg",
+    "faviconUrl": "/branding/favicon.ico"
+  }
+}

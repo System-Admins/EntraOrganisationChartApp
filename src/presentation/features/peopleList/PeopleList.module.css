@@ -1,0 +1,165 @@
+/* Level with the panel's Close button in the other corner, and as tall: 44px, as every button is. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  margin: -12px 0 0 -4px;
+  padding: 0 8px 0 4px;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* A margin, not a padding, keeps the heading and the focus ring it takes as the list opens clear of the Close button. */
+.heading {
+  margin: 4px 40px 2px 0;
+  font-size: calc(18px * var(--text-scale));
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  margin: 0 0 12px;
+  color: var(--muted-text);
+  overflow-wrap: anywhere;
+}
+
+/* An edge in the secondary text colour: --border is too faint for a field (WCAG 1.4.11). */
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: 4px;
+}
+
+/* iOS zooms the page into inputs whose text is smaller than 16px. */
+@media (pointer: coarse) {
+  .field {
+    font-size: calc(16px * var(--text-scale));
+  }
+}
+
+/* Keeps its line while empty, so the rows don't jump as the count comes and goes. */
+.count {
+  min-height: 1.4em;
+  margin: 4px 0 8px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.note {
+  margin: 0 0 8px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.list,
+.board {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* As many columns of photos as the panel's width takes: three beside the chart, its scrollbar included, more in a phone's sheet. */
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+}
+
+.person {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 4px;
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.person > :first-child {
+  grid-row: span 2;
+}
+
+/* What a press does, at the row's end, beside the name and the line under it. */
+.withAction {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.action {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+/* The line says why the person is listed there, as in the directory health report, so it wraps rather than being cut on a phone. */
+.withAction .detail {
+  white-space: normal;
+}
+
+.board .person {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-content: start;
+  row-gap: 4px;
+  height: 100%;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.board .person > :first-child {
+  grid-row: auto;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--accent-text);
+  overflow-wrap: anywhere;
+}
+
+.detail {
+  overflow: hidden;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Two lines under a photo, where a row has one beside it. */
+.board .detail {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Underlined rather than tinted, as in the details' lists: the hover tint would lower the name's contrast in the dark theme. */
+@media (hover: hover) {
+  .back:hover,
+  .person:hover .name,
+  .person:hover .action {
+    text-decoration: underline;
+  }
+}

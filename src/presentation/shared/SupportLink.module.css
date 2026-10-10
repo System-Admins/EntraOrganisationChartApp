@@ -1,0 +1,15 @@
+/* The accent's text shade, as the status bar's links have it; the hint after it keeps the colour of the text around it. */
+.link {
+  font-weight: 600;
+  color: var(--accent-text);
+}
+
+.lastWord {
+  white-space: nowrap;
+}
+
+/* After the label, on its line. */
+.link svg {
+  margin-left: 4px;
+  vertical-align: -2px;
+}

@@ -1,0 +1,71 @@
+/* The browser draws a dialog in the system's colours; the app's themes have their own. */
+.dialog {
+  /* Wide enough for the account section's three buttons in one row. */
+  width: min(540px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.3);
+  /* Keeps what the keyboard reaches clear of the header, which stays in place while the rest scrolls. */
+  scroll-padding-top: 60px;
+}
+
+/* A person's name, details and a count side by side in a row. */
+.wide {
+  width: min(840px, calc(100vw - 32px));
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+
+.content {
+  padding: 0 20px 20px;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  /* The Close button's own 13px takes its icon to the content's edge. */
+  margin-right: -13px;
+  padding: 8px 0 4px;
+  background: var(--surface);
+}
+
+.title {
+  margin: 0;
+  font-size: calc(18px * var(--text-scale));
+  font-weight: 600;
+}
+
+/* 44px: 13px around the 18px icon (WCAG 2.5.5). */
+.close {
+  display: inline-flex;
+  padding: 13px;
+  color: var(--muted-text);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background: var(--hover);
+  }
+}
+
+/* An open dialog lies in the top layer, over the chart that is being printed. */
+@media print {
+  .dialog {
+    display: none;
+  }
+}

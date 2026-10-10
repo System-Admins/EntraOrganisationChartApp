@@ -1,0 +1,112 @@
+/* The report's own layout; its buttons, hints and copy fields take the classes of DialogControls.module.css, as those of Settings, which it opens from, do. */
+.loading,
+.summary {
+  margin: 4px 0 0;
+}
+
+.failed {
+  margin-top: 4px;
+}
+
+.failed p {
+  margin: 0;
+}
+
+/* The warning colour stands on the surface, as the load panel's does. */
+.reason {
+  color: var(--warning);
+}
+
+.issues {
+  margin-top: 16px;
+}
+
+.issue {
+  border-top: 1px solid var(--border);
+}
+
+.heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+/* The whole row is the button, 44px tall (WCAG 2.5.5), its count at the far end where the eye runs down the counts. */
+.toggle,
+.static {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 4px;
+  font-weight: inherit;
+  color: var(--text);
+  text-align: left;
+}
+
+.toggle {
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Lined up with the labels beside the toggles' chevrons: 16px and the 8px gap. */
+.static {
+  padding-left: 28px;
+}
+
+.label {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  font-weight: 400;
+  color: var(--muted-text);
+  white-space: nowrap;
+}
+
+/* The photo check and the people under a heading, in from its edge as far as its label. */
+.photoCheck,
+.people {
+  padding: 0 4px 12px 28px;
+}
+
+.photoCheck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+/* A hint's look, without the hint's margin, which would lift the button beside it out of line. */
+.photoHint {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.progress {
+  width: 160px;
+}
+
+.explanation {
+  margin: 0;
+  color: var(--muted-text);
+}
+
+.list {
+  margin-top: 12px;
+}
+
+/* A row of its own under the buttons. */
+.manual {
+  flex-basis: 100%;
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    background: var(--hover);
+  }
+}

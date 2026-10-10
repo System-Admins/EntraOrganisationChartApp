@@ -1,0 +1,47 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "Organization chart",
+    "id": "29789b26-07da-46d8-9205-27fca0709ded",
+    "version": "{{VERSION}}.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.23.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "The organization chart of https://{{HOST}}/, signed in through SharePoint."
+      },
+      "longDescription": {
+        "default": "Shows the organization chart of https://{{HOST}}/ on SharePoint pages, and hands it the viewer's token for Microsoft Graph, which only that site receives."
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "webApiPermissionRequests": [
+      { "resource": "Microsoft Graph", "scope": "User.Read.All" },
+      { "resource": "Microsoft Graph", "scope": "Presence.Read.All" },
+      { "resource": "Microsoft Graph", "scope": "Calendars.ReadBasic" }
+    ],
+    "features": [
+      {
+        "title": "Organization chart",
+        "description": "The Organization chart web part.",
+        "id": "bc7c9ebc-8d14-497c-acc6-36ef48bdb725",
+        "version": "{{VERSION}}.0"
+      }
+    ]
+  },
+  "paths": {
+    "packageDir": "solution",
+    "debugDir": "debug",
+    "zippedPackage": "organization-chart.sppkg"
+  }
+}

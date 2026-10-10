@@ -1,0 +1,75 @@
+{
+  "_about": "Every key, with an example value. Keys that start with _ are ignored.",
+  "dataSource": "graph",
+  "auth": {
+    "tenantId": "00000000-0000-0000-0000-000000000000",
+    "clientId": "00000000-0000-0000-0000-000000000000"
+  },
+  "chart": {
+    "topPersons": ["ceo@contoso.com", "chair@contoso.com"],
+    "hide": {
+      "withoutManager": true,
+      "withHiddenManager": true,
+      "inManagerCycle": true,
+      "disabledAccounts": true,
+      "guests": true,
+      "unlicensed": true,
+      "withoutJobTitle": false,
+      "hiddenFromAddressList": true,
+      "unattached": false
+    },
+    "expandDepth": 2,
+    "startAt": "me",
+    "showPhotos": true,
+    "showPresence": true,
+    "showWorkLocation": true,
+    "showWorkingHours": true,
+    "showLevels": false
+  },
+  "contact": {
+    "emailClient": "outlookWeb"
+  },
+  "account": {
+    "changePhotoUrl": "https://myaccount.microsoft.com/"
+  },
+  "support": {
+    "url": "mailto:servicedesk@contoso.com",
+    "label": "Contact the Contoso service desk"
+  },
+  "directory": {
+    "cacheInBrowser": true,
+    "refreshAfterMinutes": 60,
+    "extraFields": [
+      { "property": "employeeOrgData.costCenter", "label": "Cost centre", "search": true, "export": true },
+      { "property": "employeeOrgData.division", "label": "Division", "search": true },
+      { "property": "employeeType", "label": "Employee type" }
+    ]
+  },
+  "export": {
+    "enabled": true,
+    "csvSeparator": ";"
+  },
+  "reports": {
+    "enabled": true
+  },
+  "embedding": {
+    "allowedSites": ["https://contoso.sharepoint.com", "https://intranet.contoso.com"]
+  },
+  "theme": "auto",
+  "language": "auto",
+  "branding": {
+    "title": "Contoso organization chart",
+    "logoUrl": "/branding/logo.svg",
+    "logoAlt": "Contoso",
+    "faviconUrl": "/branding/favicon.ico",
+    "fontFamily": "'Segoe UI', sans-serif",
+    "colors": {
+      "accent": "#0f548c",
+      "headerBackground": "#ffffff",
+      "headerText": "#242424"
+    },
+    "darkColors": {
+      "accent": "#479ef5"
+    }
+  }
+}

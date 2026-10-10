@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "c8b01590-7d51-45ba-bfe6-49e1cb230b1e",
+  "alias": "OrganizationChartWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart"],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "Advanced" },
+      "title": { "default": "Organization chart" },
+      "description": { "default": "The organization chart, signed in as the person viewing the page." },
+      "officeFabricIconFontName": "Org",
+      "properties": {
+        "address": "",
+        "height": 800,
+        "logo": true,
+        "search": true,
+        "toolbar": true,
+        "statusBar": true,
+        "siteColors": true,
+        "sectionBackground": true
+      }
+    }
+  ]
+}
