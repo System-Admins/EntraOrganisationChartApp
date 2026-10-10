@@ -12,6 +12,7 @@ const directory: StoredDirectory = {
   loadedAt: new Date(2026, 9, 1, 9, 5),
   changesLink: 'https://graph.microsoft.com/v1.0/users/delta?$deltatoken=abc',
   fullReadAt: new Date(2026, 8, 30, 14, 3),
+  loadedBy: 'me',
 };
 
 /** The database as version 1 of the chart left it, with its connection closed: the snapshots alone, with a copy of the directory. */

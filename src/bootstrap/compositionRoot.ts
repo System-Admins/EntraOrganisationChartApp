@@ -235,6 +235,7 @@ async function createDataAccess(config: AppConfig, host: HostEnvironment): Promi
       new GraphEmployeeSource(graph, extraFields),
       config.cacheInBrowser ? store : null,
       ensureSignedIn,
+      authenticator,
     ),
     photos: new GraphPhotoSource(graph, config.cacheInBrowser ? photoStore : null),
     presence: new GraphPresenceSource(new GraphClient(authenticator.getPresenceToken)),

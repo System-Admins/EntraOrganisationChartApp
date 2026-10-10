@@ -9,7 +9,6 @@ trigger:
   paths:
     exclude:
       - README.md
-      - CLAUDE.md
       - docs
 
 pool:

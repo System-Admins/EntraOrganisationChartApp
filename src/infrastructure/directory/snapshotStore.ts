@@ -7,6 +7,8 @@ export interface StoredDirectory extends DirectorySnapshot {
   readonly changesLink: string | null;
   /** When everything was last read; later refreshes may have read only what changed. */
   readonly fullReadAt: Date | null;
+  /** The directory id of the account the people were read with: the copy is handed back to that account alone. */
+  readonly loadedBy: string | null;
 }
 
 export interface SnapshotStore {
@@ -18,13 +20,14 @@ export interface SnapshotStore {
 /** Bump when Employee changes shape so stale records are ignored instead of misread. */
 const SCHEMA_VERSION = 5;
 
-/** Records written before change tracking have no changesLink, and older ones no fullReadAt; they are read with none. */
+/** Records written before change tracking have no changesLink, older ones no fullReadAt, and ones from before the loader was recorded no loadedBy; they are read with none. */
 export interface StoredSnapshot extends DirectorySnapshot {
   readonly schemaVersion: number;
   /** The organization's own fields that the people were read with (signatureOf). */
   readonly extraFields: string;
   readonly changesLink?: string | null;
   readonly fullReadAt?: Date | null;
+  readonly loadedBy?: string | null;
 }
 
 /** `extraFields` are the organization's own fields that the people were read with. */
@@ -40,6 +43,7 @@ export function fromRecord(record: StoredSnapshot | undefined, extraFields: read
     loadedAt: record.loadedAt,
     changesLink: record.changesLink ?? null,
     fullReadAt: record.fullReadAt ?? null,
+    loadedBy: record.loadedBy ?? null,
   };
 }
 

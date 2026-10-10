@@ -327,7 +327,7 @@ Delegated Microsoft Graph permissions, with admin consent:
 
 ## Privacy
 
-- There is no server. The browser reads Microsoft Graph as the signed-in user and keeps a copy of the directory for the next visit. Sign out, or **Forget this browser's copy** in Settings, deletes the copy.
+- There is no server. The browser reads Microsoft Graph as the signed-in user and keeps a copy of the directory for the next visit. The copy is handed back only to the account that loaded it. Sign out, or **Forget this browser's copy** in Settings, deletes it.
 - Anyone who can open the chart sees what the Microsoft 365 people card shows. The filters tidy the chart; they don't hide data. Anyone can switch them off, the address list filter included.
 - The CSV export and the directory health report put everyone's contact details in one file. Turn them off with `export.enabled` and `reports.enabled`.
 

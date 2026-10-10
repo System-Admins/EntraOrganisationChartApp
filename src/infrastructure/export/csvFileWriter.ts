@@ -12,7 +12,7 @@ export class CsvFileWriter implements TableFileWriter {
 
 /** RFC 4180 behind a byte order mark: without one, Excel reads UTF-8 as the local code page. */
 export function toCsv(table: Table, separator: CsvSeparator): string {
-  const line = (cells: readonly string[]) => cells.map((cell) => quote(defuse(cell), separator)).join(separator);
+  const line = (cells: readonly string[]) => cells.map((cell) => quote(defuse(cell))).join(separator);
   return `\uFEFF${[table.columns, ...table.rows].map(line).join('\r\n')}\r\n`;
 }
 
@@ -25,8 +25,11 @@ function defuse(cell: string): string {
   return FORMULA_START.test(cell) && !PHONE_NUMBER.test(cell) ? `'${cell}` : cell;
 }
 
-function quote(cell: string, separator: CsvSeparator): string {
-  return cell.includes(separator) || /["\r\n]/.test(cell) ? `"${cell.replaceAll('"', '""')}"` : cell;
+/** Either common separator, not only the file's: a spreadsheet set to the other one would split the cell, and could run its second part. */
+const NEEDS_QUOTES = /[,;"\r\n]/;
+
+function quote(cell: string): string {
+  return NEEDS_QUOTES.test(cell) ? `"${cell.replaceAll('"', '""')}"` : cell;
 }
 
 function download(fileName: string, file: Blob): void {

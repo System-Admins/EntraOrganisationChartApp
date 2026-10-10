@@ -5,10 +5,14 @@ import type {
   EmployeeDirectory,
   ProgressListener,
 } from '@/application/abstractions/employeeDirectory';
+import type { SignedInUserSource } from '@/application/abstractions/signedInUser';
 import type { EmployeeSource, LoadedEmployees, ReadPosition } from './employeeSource';
 import type { SnapshotStore, StoredDirectory } from './snapshotStore';
 
-/** The stored copy is only handed out after `ensureSignedIn` succeeds and is deleted when a sign-in is required. */
+/** Without a source of the signed-in user, no stored copy can be told whose it is, so none is handed out. */
+const NOBODY: SignedInUserSource = { getSignedInUser: () => null };
+
+/** The stored copy is only handed out after `ensureSignedIn` succeeds, and only to the account that loaded it; it is deleted when a sign-in is required. */
 export class CachedEmployeeDirectory implements EmployeeDirectory {
   private snapshot: DirectorySnapshot | null = null;
   private changesLink: string | null = null;
@@ -25,6 +29,7 @@ export class CachedEmployeeDirectory implements EmployeeDirectory {
     private readonly source: EmployeeSource,
     private readonly store: SnapshotStore | null,
     private readonly ensureSignedIn: () => Promise<unknown> = () => Promise.resolve(),
+    private readonly signedInUser: SignedInUserSource = NOBODY,
     private readonly now: () => Date = () => new Date(),
   ) {}
 
@@ -43,9 +48,15 @@ export class CachedEmployeeDirectory implements EmployeeDirectory {
         throw error;
       }
       const stored = await reading;
-      if (stored && generation === this.generation) this.adopt(stored);
+      if (stored && generation === this.generation && this.isOwn(stored)) this.adopt(stored);
     }
     return this.snapshot ?? this.refresh(onProgress);
+  }
+
+  /** A copy that another account loaded on this browser profile stays unseen; the load that follows writes this account's over it. */
+  private isOwn(stored: StoredDirectory): boolean {
+    const id = this.signedInUser.getSignedInUser()?.id;
+    return id !== undefined && stored.loadedBy === id;
   }
 
   async forget(): Promise<void> {
@@ -90,7 +101,12 @@ export class CachedEmployeeDirectory implements EmployeeDirectory {
     this.snapshot = snapshot;
     this.changesLink = loaded.changesLink;
     if (!changes) this.fullReadAt = snapshot.loadedAt;
-    const stored: StoredDirectory = { ...snapshot, changesLink: loaded.changesLink, fullReadAt: this.fullReadAt };
+    const stored: StoredDirectory = {
+      ...snapshot,
+      changesLink: loaded.changesLink,
+      fullReadAt: this.fullReadAt,
+      loadedBy: this.signedInUser.getSignedInUser()?.id ?? null,
+    };
     // Not awaited: the chart can show while the browser writes the copy for the next visit.
     this.store?.write(stored).then(
       () => {

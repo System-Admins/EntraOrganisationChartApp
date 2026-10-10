@@ -13,9 +13,12 @@ export function parseOneOf<T extends string>(value: string, allowed: readonly T[
   throw new ConfigError(`${label} must be one of: ${allowed.map((item) => `"${item}"`).join(', ')}${got}.`);
 }
 
+/** A colour never needs a substitution function or an escape; through var(), CSS.supports would pass any value, such as a url() that `background` then loads. */
+const NOT_A_COLOR = /\\|\b(?:var|attr|env)\s*\(/i;
+
 /** `echo` as for parseOneOf; an invalid colour would blank every var() that uses it, and unit tests have no CSS. */
 export function parseCssColor(value: string, label: string, echo = true): string {
-  if (typeof CSS === 'undefined' || CSS.supports('color', value)) return value;
+  if (!NOT_A_COLOR.test(value) && (typeof CSS === 'undefined' || CSS.supports('color', value))) return value;
   throw new ConfigError(`${label} must be a CSS colour such as "#0f548c"${echo ? ` (got "${value}")` : ''}.`);
 }
 

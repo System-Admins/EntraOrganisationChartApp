@@ -8,20 +8,22 @@ const directory: StoredDirectory = {
   loadedAt: new Date(2026, 9, 1, 9, 5),
   changesLink: 'https://graph.microsoft.com/v1.0/users/delta?$deltatoken=abc',
   fullReadAt: new Date(2026, 8, 30, 14, 3),
+  loadedBy: 'me',
 };
 
 describe('snapshot records', () => {
-  it('read back what was written, the time of the last full read included', () => {
+  it('read back what was written, the time of the last full read and the loader included', () => {
     expect(fromRecord(toRecord(directory))).toEqual(directory);
   });
 
-  it('read a record from before change tracking and full-read times as having neither', () => {
+  it('read a record from before change tracking, full-read times and the loader as having none', () => {
     const { schemaVersion, extraFields } = toRecord(directory);
 
     expect(fromRecord({ schemaVersion, extraFields, employees: directory.employees, loadedAt: directory.loadedAt })).toEqual({
       ...directory,
       changesLink: null,
       fullReadAt: null,
+      loadedBy: null,
     });
   });
 

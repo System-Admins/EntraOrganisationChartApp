@@ -1,19 +1,26 @@
 import { describe, expect, it, vi } from 'vitest';
 import { SignInRequiredError } from '@/application/abstractions/authenticator';
 import { ServiceError } from '@/application/abstractions/serviceError';
+import type { SignedInUserSource } from '@/application/abstractions/signedInUser';
 import { makeEmployee } from '@/testing/makeEmployee';
 import { CachedEmployeeDirectory } from './cachedEmployeeDirectory';
 import type { EmployeeSource, ReadCheckpoint, ReadPosition } from './employeeSource';
 import type { SnapshotStore, StoredDirectory } from './snapshotStore';
+
+/** The account the tests are signed in with, which the stored copy was loaded by. */
+const ME: SignedInUserSource = {
+  getSignedInUser: () => ({ id: 'me', displayName: 'Me', userPrincipalName: 'me@contoso.com', isGuest: false }),
+};
 
 const stored: StoredDirectory = {
   employees: [makeEmployee('stored')],
   loadedAt: new Date('2026-01-01'),
   changesLink: null,
   fullReadAt: new Date('2025-12-30'),
+  loadedBy: 'me',
 };
 
-function setup(store: Partial<SnapshotStore> | null, ensureSignedIn?: () => Promise<unknown>) {
+function setup(store: Partial<SnapshotStore> | null, ensureSignedIn?: () => Promise<unknown>, signedInUser = ME) {
   const loadAll = vi.fn<EmployeeSource['loadAll']>(() =>
     Promise.resolve({ employees: [makeEmployee('fresh')], changesLink: null }),
   );
@@ -23,7 +30,7 @@ function setup(store: Partial<SnapshotStore> | null, ensureSignedIn?: () => Prom
     clear: () => Promise.resolve(),
     ...store,
   };
-  return { directory: new CachedEmployeeDirectory({ loadAll }, fullStore, ensureSignedIn), loadAll };
+  return { directory: new CachedEmployeeDirectory({ loadAll }, fullStore, ensureSignedIn, signedInUser), loadAll };
 }
 
 describe('CachedEmployeeDirectory', () => {
@@ -34,7 +41,7 @@ describe('CachedEmployeeDirectory', () => {
     expect(loadAll).not.toHaveBeenCalled();
   });
 
-  it('loads once, keeps the result in memory and persists it', async () => {
+  it('loads once, keeps the result in memory and persists it, recording whose it is', async () => {
     const write = vi.fn(() => Promise.resolve());
     const { directory, loadAll } = setup({ write });
 
@@ -43,7 +50,35 @@ describe('CachedEmployeeDirectory', () => {
 
     expect(second).toBe(first);
     expect(loadAll).toHaveBeenCalledTimes(1);
-    expect(write).toHaveBeenCalledWith({ ...first, changesLink: null, fullReadAt: first.loadedAt });
+    expect(write).toHaveBeenCalledWith({ ...first, changesLink: null, fullReadAt: first.loadedAt, loadedBy: 'me' });
+  });
+
+  it('leaves a copy that another account loaded unseen, and writes its own over it', async () => {
+    const write = vi.fn(() => Promise.resolve());
+    const { directory, loadAll } = setup({ read: () => Promise.resolve({ ...stored, loadedBy: 'someone else' }), write });
+
+    const snapshot = await directory.getSnapshot();
+
+    expect(loadAll).toHaveBeenCalledTimes(1);
+    expect(snapshot.employees.map((employee) => employee.id)).toEqual(['fresh']);
+    expect(write).toHaveBeenCalledWith(expect.objectContaining({ loadedBy: 'me' }));
+  });
+
+  it('leaves a copy from before the loader was recorded unseen, as it could be anyone\'s', async () => {
+    const { directory, loadAll } = setup({ read: () => Promise.resolve({ ...stored, loadedBy: null }) });
+
+    await directory.getSnapshot();
+
+    expect(loadAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('hands out no copy while the signed-in account is unknown', async () => {
+    const nobody: SignedInUserSource = { getSignedInUser: () => null };
+    const { directory, loadAll } = setup({ read: () => Promise.resolve(stored) }, undefined, nobody);
+
+    await directory.getSnapshot();
+
+    expect(loadAll).toHaveBeenCalledTimes(1);
   });
 
   it('shares one load between concurrent refreshes', async () => {
@@ -261,7 +296,7 @@ describe('CachedEmployeeDirectory', () => {
       );
       const write = vi.fn(() => Promise.resolve());
       const fullStore: SnapshotStore = { read: () => Promise.resolve(null), write, clear: () => Promise.resolve(), ...store };
-      return { directory: new CachedEmployeeDirectory({ loadAll, loadChanges }, fullStore), loadAll, loadChanges, write };
+      return { directory: new CachedEmployeeDirectory({ loadAll, loadChanges }, fullStore, undefined, ME), loadAll, loadChanges, write };
     }
 
     it('loads only what changed once it has a link, and keeps the new link for the next visit', async () => {
@@ -321,7 +356,7 @@ describe('CachedEmployeeDirectory', () => {
         clear: () => Promise.resolve(),
         ...store,
       };
-      const directory = new CachedEmployeeDirectory({ loadAll, loadChanges }, fullStore, undefined, clock());
+      const directory = new CachedEmployeeDirectory({ loadAll, loadChanges }, fullStore, undefined, ME, clock());
       return { directory, loadChanges, write };
     }
 
