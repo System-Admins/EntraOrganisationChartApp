@@ -1,0 +1,343 @@
+/* The column may shrink below its content, so text-only zoom can't widen the page past the window. */
+.page {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100dvh;
+}
+
+.skipLink {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 30;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+/* The ring lies on the link's own surface: a branded header behind it could be the ring's colour. */
+.skipLink:focus {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/* Hidden like .visually-hidden until the keyboard reaches it. */
+.skipLink:not(:focus) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 16px;
+  color: var(--header-text);
+  background: var(--header-background);
+  border-bottom: 1px solid var(--border);
+  /* Branding can colour the header, so rings on it follow its text colour. */
+  --focus-ring: var(--header-text);
+}
+
+/* The search suggestions lie on the surface, not on the header. */
+.header [role='listbox'] {
+  --focus-ring: var(--text);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.separator {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: currentColor;
+  opacity: 0.2;
+}
+
+.zoomLevel {
+  position: relative;
+  min-width: 48px;
+  height: 44px;
+  padding: 0 4px;
+  font-size: calc(12px * var(--text-scale));
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .zoomLevel:hover:not(:disabled) {
+    background: var(--hover);
+  }
+}
+
+/* On the surface colour, not the header's: branding can give the header any colour. */
+.toolbar .signOut {
+  color: var(--danger);
+  background: var(--surface);
+}
+
+@media (hover: hover) {
+  .toolbar button.signOut:hover {
+    color: var(--surface);
+    background: var(--danger);
+  }
+}
+
+.zoomLevel:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Five turns, then the icon rests: nobody can pause it, which WCAG 2.2.2 allows for 5 s. */
+.spinning svg {
+  animation: spin 1s linear 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinning svg {
+    animation: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.main {
+  position: relative;
+  display: flex;
+  grid-row: 3;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The second row, empty unless the chart shows one team alone or the departments: a bar for each, in this column. */
+.bars {
+  grid-row: 2;
+}
+
+/* The accent's edge and a filled button, as people missed the way back. */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 4px 16px 4px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+}
+
+.bar > svg {
+  flex: none;
+  color: var(--accent-text);
+}
+
+/* Beside the button, in two lines if need be, until it would get narrower than this: then the button takes a line of its own. */
+.barText {
+  flex: 1 1 10em;
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Filled as the panels' buttons are: the accent's text shade under the surface colour keeps 7:1 whatever the branding. */
+.barButton {
+  min-height: 44px;
+  margin-left: auto;
+  padding: 6px 20px;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent-text);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Forced colours drop the fill, which leaves a button without an edge. */
+@media (forced-colors: active) {
+  .barButton {
+    border: 1px solid ButtonText;
+  }
+}
+
+.barWarning {
+  border-left-color: var(--warning);
+}
+
+.barWarning > svg,
+.barWarning .barText {
+  color: var(--warning);
+}
+
+.status:empty {
+  display: none;
+}
+
+.status {
+  display: flex;
+  grid-row: 4;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  padding: 5px 16px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+/* The bar's last item: at the right end, of whichever line it wraps onto. */
+.updated {
+  margin-left: auto;
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.link {
+  padding: 0;
+  font-size: inherit;
+  font-weight: 600;
+  color: var(--accent-text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* A full read of the directory: its bar on the loading screen and in the status bar, beside the words that say the same. */
+.progressBar {
+  width: min(240px, 100%);
+}
+
+.reading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reading .progressBar {
+  width: 64px;
+  height: 6px;
+}
+
+/* Narrow windows: the toolbar gets its own row. The column, not the search box, sets the 120px minimum. */
+@media screen and (max-width: 640px) {
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(120px, 1fr);
+    padding: 8px;
+  }
+
+  /* Without the brand (Teams), the search alone fills the first row. */
+  .headerWithoutBrand {
+    grid-template-columns: minmax(120px, 1fr);
+  }
+
+  .header > :nth-child(2),
+  .headerWithoutBrand > :first-child {
+    min-width: 0;
+    max-width: none;
+  }
+
+  /* Without gaps, and with 4px of the header's padding on each side, all eight 44px buttons fit a 360px window; below that the toolbar wraps rather than widening the page. */
+  .toolbar {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0;
+    margin-inline: -4px;
+  }
+
+  /* The 44px buttons fill the row, so the profile and Sign out are left to the settings dialog. */
+  .separator,
+  .accountControl {
+    display: none;
+  }
+}
+
+/* Outline layout and bottom-sheet details panel (see OrgChart.module.css). */
+@media screen and (max-width: 719.98px) {
+  .main {
+    --sheet-height: min(50dvh, 440px);
+  }
+
+  /* The outline never needs zooming. */
+  .zoomControl {
+    display: none;
+  }
+
+  /* Room to scroll the last people above the sheet, and a scroll-padding that useZoom subtracts when centring. */
+  .main:has(> aside) > :first-child {
+    padding-bottom: var(--sheet-height);
+    scroll-padding-bottom: var(--sheet-height);
+  }
+}
+
+@media print {
+  .page {
+    display: block;
+    height: auto;
+  }
+
+  .header {
+    padding: 0 0 12px;
+    background: none;
+    border: 0;
+  }
+
+  /* Only the logo and title remain; search and toolbar are useless on paper. */
+  .header > :not(:first-child),
+  .headerWithoutBrand > :first-child {
+    display: none;
+  }
+
+  .main {
+    display: block;
+    overflow: visible;
+  }
+
+  .status {
+    padding: 12px 0 0;
+    background: none;
+    border: 0;
+  }
+
+  /* Which team the paper shows, under the title. */
+  .bar {
+    padding: 0 0 12px;
+    background: none;
+    border: 0;
+  }
+
+  .status button,
+  .bar button,
+  .bar > svg,
+  .progressBar,
+  .skipLink {
+    display: none;
+  }
+}

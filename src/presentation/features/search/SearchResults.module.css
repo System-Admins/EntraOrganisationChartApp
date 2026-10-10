@@ -1,0 +1,36 @@
+.failed {
+  margin: 0 0 12px;
+}
+
+.failed p {
+  margin: 0;
+}
+
+/* The warning colour stands on the surface, as the load panel's does. */
+.reason {
+  color: var(--warning);
+}
+
+/* Underlined text in the accent, like the status bar's buttons, 44px tall like every button. */
+.retry {
+  min-height: 44px;
+  padding: 0;
+  font-weight: 600;
+  color: var(--accent-text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.detail {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0 0 8px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}

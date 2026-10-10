@@ -1,0 +1,39 @@
+/* Positioned for its tooltip (useTooltip). */
+.profile {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 8px;
+  font-size: calc(13px * var(--text-scale));
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .profile:hover {
+    background: var(--hover);
+  }
+}
+
+.name {
+  max-width: 180px;
+  padding-right: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Below this width the toolbar needs the room; the button's name and tooltip still say who it is. */
+@media screen and (max-width: 1279.98px) {
+  .name {
+    display: none;
+  }
+}

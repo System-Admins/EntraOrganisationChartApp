@@ -1,0 +1,189 @@
+# Builds and tests the site, deploys main to the Azure Static Web App and packages the Teams and SharePoint apps.
+
+trigger:
+  # One run for everything pushed while a run was in progress, so an older build never deploys last.
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.md
+      - docs
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  # deploymentToken (secret) and siteHost come from this variable group; a value set here would override it.
+  - group: OrganizationChart
+  - name: nodeVersion
+    value: 24.x
+  # The SharePoint Framework runs on Node.js 22 alone (sharepoint/package.json).
+  - name: sharePointNodeVersion
+    value: 22.x
+  # The developer name that Teams shows for the app.
+  - name: teamsDeveloper
+    value: Contoso
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
+
+stages:
+  - stage: Build
+    displayName: Build and test
+    jobs:
+      - job: Build
+        displayName: Site, Teams and SharePoint apps
+        steps:
+          - bash: |
+              case "$SITE_HOST" in
+                '' | *'('*)
+                  echo "##vso[task.logissue type=error]The variable siteHost is not set. Add it to the variable group OrganizationChart (Pipelines > Library): the site's host name, for example orgchart.contoso.com."
+                  exit 1
+                  ;;
+              esac
+            displayName: Check that siteHost is set
+            env:
+              # An undefined variable arrives as its own name in parentheses.
+              SITE_HOST: $(siteHost)
+
+          - task: UseNode@1
+            displayName: Use Node.js $(nodeVersion)
+            inputs:
+              version: $(nodeVersion)
+
+          - task: Cache@2
+            displayName: Restore the npm cache
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json | sharepoint/package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(npm_config_cache)
+
+          # The build needs no install scripts, and keytar's would fetch or compile a native module.
+          - script: npm ci --ignore-scripts
+            displayName: Install dependencies
+
+          # The build doesn't run ESLint, which also enforces the layer rules.
+          - script: npm run lint
+            displayName: Lint
+
+          - script: npm test -- --reporter=default --reporter=junit --outputFile.junit="$(Common.TestResultsDirectory)/vitest.xml"
+            displayName: Test
+
+          - task: PublishTestResults@2
+            displayName: Publish the test results
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: JUnit
+              testResultsFiles: vitest.xml
+              searchFolder: $(Common.TestResultsDirectory)
+              testRunTitle: Unit and component tests
+
+          - script: npm run build
+            displayName: Type-check and build
+            env:
+              # Settings > About this chart shows 1.0.<build ID>, the version the Teams package gets below (vite.config.ts).
+              ORGAPP_BUILD_ID: $(Build.BuildId)
+
+          - bash: |
+              set -euo pipefail
+              # Teams only accepts a package as an update when its version is higher, so the run id is the patch number.
+              version=`node -p "require('./package.json').version.replace(/[^.]*$/, process.env.BUILD_BUILDID)"`
+              echo "##vso[task.setvariable variable=packageVersion]$version"
+            displayName: Number the app packages
+
+          - bash: npm run package:teams -- --host "$SITE_HOST" --developer "$TEAMS_DEVELOPER" --version "$PACKAGE_VERSION"
+            displayName: Package the Teams app
+            env:
+              SITE_HOST: $(siteHost)
+              TEAMS_DEVELOPER: $(teamsDeveloper)
+              PACKAGE_VERSION: $(packageVersion)
+
+          - task: UseNode@1
+            displayName: Use Node.js $(sharePointNodeVersion) for the SharePoint Framework
+            inputs:
+              version: $(sharePointNodeVersion)
+
+          - script: npm ci --ignore-scripts
+            displayName: Install the SharePoint Framework
+            workingDirectory: sharepoint
+
+          - bash: npm run package:sharepoint -- --host "$SITE_HOST" --version "$PACKAGE_VERSION"
+            displayName: Package the SharePoint app
+            env:
+              SITE_HOST: $(siteHost)
+              PACKAGE_VERSION: $(packageVersion)
+
+          - publish: $(System.DefaultWorkingDirectory)/dist
+            artifact: site
+            displayName: Publish the site
+
+          - publish: $(System.DefaultWorkingDirectory)/teams/build
+            artifact: teams-app
+            displayName: Publish the Teams app package
+
+          - publish: $(System.DefaultWorkingDirectory)/sharepoint/solution/organization-chart.sppkg
+            artifact: sharepoint-app
+            displayName: Publish the SharePoint app package
+
+  - stage: Deploy
+    displayName: Deploy
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: StaticWebApp
+        displayName: Azure Static Web App
+        # Created on the first run. Approvals and checks can be added to it under Pipelines > Environments.
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: site
+                  displayName: Download the site
+
+                - bash: |
+                    case "$DEPLOYMENT_TOKEN" in
+                      '' | *'('*)
+                        echo "##vso[task.logissue type=error]The variable deploymentToken is not set. Add the Static Web App's deployment token to the variable group OrganizationChart (Pipelines > Library) as a secret."
+                        exit 1
+                        ;;
+                    esac
+                  displayName: Check that deploymentToken is set
+                  env:
+                    DEPLOYMENT_TOKEN: $(deploymentToken)
+
+                # The task runs on Linux agents only. app_location is relative to the working directory.
+                - task: AzureStaticWebApp@0
+                  displayName: Deploy the site
+                  inputs:
+                    workingDirectory: $(Pipeline.Workspace)/site
+                    app_location: /
+                    output_location: ''
+                    skip_app_build: true
+                    skip_api_build: true
+                    azure_static_web_apps_api_token: $(deploymentToken)
+
+                # A wrong siteHost would go unnoticed until the Teams app opens another site, or none.
+                - bash: |
+                    set -uo pipefail
+                    # The host name alone, as the Teams package takes it from an address too.
+                    host="${SITE_HOST#*://}"
+                    host="${host%%/*}"
+                    live="$AGENT_TEMPDIRECTORY/live.html"
+                    # A new deployment can take a moment to reach the address.
+                    for attempt in {1..18}; do
+                      if curl --fail --silent --max-time 20 --output "$live" "https://$host/index.html" &&
+                        cmp --silent "$live" "$PIPELINE_WORKSPACE/site/index.html"; then
+                        echo "https://$host/ serves this build."
+                        exit 0
+                      fi
+                      sleep 10
+                    done
+                    echo "##vso[task.logissue type=warning]The site is deployed, but https://$host/ does not serve this build. Check that siteHost in the variable group OrganizationChart is this Static Web App's host name: the Teams app opens that address."
+                    echo "##vso[task.complete result=SucceededWithIssues;]"
+                  displayName: Check that siteHost serves this build
+                  env:
+                    SITE_HOST: $(siteHost)

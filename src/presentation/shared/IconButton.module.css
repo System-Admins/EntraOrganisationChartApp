@@ -1,0 +1,27 @@
+/* 44px for every pointer: the enhanced target size of WCAG 2.5.5 makes no exception for the mouse. */
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 6px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background: var(--hover);
+  }
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

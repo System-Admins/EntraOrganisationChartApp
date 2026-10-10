@@ -1,0 +1,220 @@
+/* Components use only the unprefixed variables; branding sets --brand-*, an embedding page --page-* (pageColors.ts), and the fallbacks are the defaults. */
+:root {
+  --font-family: var(
+    --brand-font-family,
+    'Segoe UI Variable Text',
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    'Helvetica Neue',
+    sans-serif
+  );
+  --accent: var(--page-accent, var(--brand-accent, #0f548c));
+  /* Text in the accent colour and fills that carry text. Fallback for browsers without relative colours. */
+  --accent-text: var(--accent);
+  /* Follows the text colour, so no branding colour can make keyboard focus invisible. */
+  --focus-ring: var(--text);
+  --header-background: var(--brand-header-background, #ffffff);
+  --header-text: var(--brand-header-text, #242424);
+  --background: var(--page-background, var(--brand-background, #f5f5f5));
+  --surface: var(--brand-surface, #ffffff);
+  --text: var(--brand-text, #242424);
+  --muted-text: var(--brand-muted-text, #505050);
+  --border: var(--brand-border, #e0e0e0);
+  /* Reporting lines are needed to read the chart, so they keep 3:1 against the background (WCAG 1.4.11). */
+  --connector: var(--brand-connector, #858585);
+  --warning: #8c3505;
+  /* Red for Sign out, 7:1 on --surface. Buttons fill with it on hover instead of taking the hover tint. */
+  --danger: #a80000;
+  --hover: rgb(0 0 0 / 0.05);
+  /* Teams' presence hues, darkened or lightened where needed to keep 3:1 against --surface (WCAG 1.4.11). */
+  --presence-available: #529400;
+  --presence-busy: #c4314b;
+  --presence-away: #c77700;
+  --presence-offline: #8a8886;
+  --presence-out-of-office: #b4009e;
+  /* The marks drawn on the presence dots: dark on the bright green and amber, light on the rest. */
+  --presence-mark-dark: #000000;
+  --presence-mark-light: #ffffff;
+  /* One colour per top person's area, each 3:1 against --surface; --on-area is the badge text at 7:1. */
+  --area-1: #af0025;
+  --area-2: #006505;
+  --area-3: #0f548c;
+  --area-4: #6641a2;
+  --area-5: #8d4201;
+  --area-6: #006065;
+  --area-7: #a10188;
+  --area-8: #614726;
+  --on-area: #ffffff;
+  /* The initials avatars' fills (Avatar.tsx): the area hues with a second blue in place of the red. */
+  --initials-1: var(--area-3);
+  --initials-2: var(--area-4);
+  --initials-3: var(--area-6);
+  --initials-4: var(--area-5);
+  --initials-5: #3a45c8;
+  --initials-6: var(--area-7);
+  --initials-7: var(--area-2);
+  --initials-8: var(--area-8);
+  --on-initials: var(--on-area);
+  /* Behind a logo without a dark variant: the light theme's header colour. */
+  --logo-backplate: var(--brand-header-background, #ffffff);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 2px 6px rgb(0 0 0 / 0.05);
+  --radius: 6px;
+  /* The person's text size (Settings > Display): every font size in the stylesheets is written as a multiple of it. */
+  --text-scale: 1;
+  color-scheme: light;
+}
+
+/* syncTheme sets data-text-size, and the standard size while the chart prints; the body's 14px becomes 16px or 18px. */
+:root[data-text-size='large'] {
+  --text-scale: calc(16 / 14);
+}
+
+:root[data-text-size='larger'] {
+  --text-scale: calc(18 / 14);
+}
+
+:root[data-theme='dark'] {
+  --accent: var(--page-accent, var(--brand-dark-accent, #479ef5));
+  --header-background: var(--brand-dark-header-background, #292929);
+  --header-text: var(--brand-dark-header-text, #ffffff);
+  --background: var(--page-background, var(--brand-dark-background, #1f1f1f));
+  --surface: var(--brand-dark-surface, #292929);
+  --text: var(--brand-dark-text, #ffffff);
+  --muted-text: var(--brand-dark-muted-text, #cccccc);
+  --border: var(--brand-dark-border, #3d3d3d);
+  --connector: var(--brand-dark-connector, #6b6b6b);
+  --warning: #ffa270;
+  --danger: #ff9c9c;
+  --hover: rgb(255 255 255 / 0.08);
+  --area-1: #f7747f;
+  --area-2: #54b054;
+  --area-3: #479ef5;
+  --area-4: #ab8ee7;
+  --area-5: #f7894a;
+  --area-6: #4bb4b7;
+  --area-7: #e47ac8;
+  --area-8: #c19a6b;
+  --on-area: #0a0a0a;
+  --initials-5: #8497fd;
+  --presence-busy: #e05a6e;
+  --presence-out-of-office: #d65cc8;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  color-scheme: dark;
+}
+
+/* High contrast, from Teams or the theme setting: legibility wins over branding. */
+:root[data-theme='contrast'] {
+  --accent: #ffff00;
+  --accent-text: var(--accent);
+  --header-background: #000000;
+  --header-text: #ffffff;
+  --background: #000000;
+  --surface: #000000;
+  --text: #ffffff;
+  --muted-text: #ffffff;
+  --border: #ffffff;
+  --connector: #ffffff;
+  --warning: #ffff00;
+  --danger: #ff8a8a;
+  --hover: rgb(255 255 255 / 0.15);
+  --area-1: var(--accent);
+  --area-2: var(--accent);
+  --area-3: var(--accent);
+  --area-4: var(--accent);
+  --area-5: var(--accent);
+  --area-6: var(--accent);
+  --area-7: var(--accent);
+  --area-8: var(--accent);
+  --on-area: #000000;
+  /* Initials are drawn like the cards, with a border (Avatar.module.css), rather than as eight fills. */
+  --initials-1: var(--surface);
+  --initials-2: var(--surface);
+  --initials-3: var(--surface);
+  --initials-4: var(--surface);
+  --initials-5: var(--surface);
+  --initials-6: var(--surface);
+  --initials-7: var(--surface);
+  --initials-8: var(--surface);
+  --on-initials: var(--text);
+  --shadow: none;
+  color-scheme: dark;
+}
+
+/* Keeps the accent's hue at a lightness that gives 7:1; the chroma limits keep it inside sRGB. */
+@supports (color: oklch(from red min(l, 0.42) min(c, 0.15) h)) {
+  :root {
+    --accent-text: oklch(from var(--accent) min(l, 0.42) min(c, 0.15) h);
+  }
+
+  :root[data-theme='dark'] {
+    --accent-text: oklch(from var(--accent) max(l, 0.87) min(c, 0.1) h);
+  }
+}
+
+/* For people whose system asks for more contrast; the high-contrast theme already has its own edges and lines. */
+@media (prefers-contrast: more) {
+  :root {
+    --border: var(--brand-border, #8a8a8a);
+    --connector: var(--brand-connector, #505050);
+  }
+
+  :root[data-theme='dark'] {
+    --border: var(--brand-dark-border, #8f8f8f);
+    --connector: var(--brand-dark-connector, #cccccc);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Landscape fits the widest trees; OrgChartCanvas scales the chart to this page width. */
+@page {
+  size: landscape;
+  margin: 10mm;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: calc(14px * var(--text-scale));
+  line-height: 1.4;
+  color: var(--text);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* Browsers fade placeholders to about 3.5:1 (Firefox: 54% of the text colour); the search field has no other label. */
+::placeholder {
+  color: var(--muted-text);
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

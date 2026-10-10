@@ -1,0 +1,94 @@
+/* A section's topics, each a heading and its text: a gap, unlike a margin, leaves nothing where a topic is hidden. */
+.topics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Below the section's title in its weight and the text's size. */
+.topicTitle {
+  margin: 0 0 8px;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.topicText {
+  margin: 0;
+}
+
+/* Each key beside what it does, and each of About's details beside its value; the first column is as wide as its longest entry, up to about half. */
+.keys,
+.facts {
+  display: grid;
+  grid-template-columns: fit-content(45%) 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+
+.keys dt,
+.facts dt {
+  font-weight: 600;
+}
+
+.keys dd,
+.facts dd {
+  margin: 0;
+}
+
+.topicText + .keys {
+  margin-top: 8px;
+}
+
+/* The legend: each mark beside what it stands for, as many to a line as fit. */
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* PresenceDot sits on the corner of a positioned box, as on a photo. */
+.statusDot {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+/* A card's top edge in the area's colour. */
+.areaSample {
+  flex: none;
+  width: 28px;
+  height: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--area-accent);
+  border-radius: 4px;
+}
+
+/* No legend where the cards have no colours of their areas: high contrast gives every area the accent, forced colours take a border's. */
+:global(:root[data-theme='contrast']) .areas {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .areas {
+    display: none;
+  }
+}
+
+/* A warning as the cards show it. */
+.flag {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--warning);
+}

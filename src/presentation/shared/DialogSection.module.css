@@ -1,0 +1,22 @@
+.section {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.section + .section {
+  margin-top: 16px;
+}
+
+.sectionTitle {
+  margin: 0 0 8px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+}
+
+/* A field to copy from right under the title, as the embed code is, which the title's margin spaces. */
+.sectionTitle + label {
+  margin-top: 0;
+}

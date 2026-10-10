@@ -1,0 +1,13 @@
+.heft
+dist
+jest-output
+lib
+lib-commonjs
+lib-dts
+lib-esm
+release
+solution
+temp
+# Written by scripts/package-sharepoint-app.mjs
+config/package-solution.json
+src/generated

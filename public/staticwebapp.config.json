@@ -1,0 +1,29 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "/branding/*", "/*.{json,svg,png,ico,html,txt}"]
+  },
+  "routes": [
+    {
+      "route": "/config.json",
+      "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/index.html",
+      "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/favicon.ico",
+      "rewrite": "/branding/favicon.ico"
+    },
+    {
+      "route": "/assets/*",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
+    }
+  ],
+  "globalHeaders": {
+    "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://graph.microsoft.com https://login.microsoftonline.com https://res.cdn.office.net; frame-src 'self' https://login.microsoftonline.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self' https://*.sharepoint.com https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft https://*.microsoft365.com https://*.office.com https://outlook.office.com https://outlook.office365.com",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
+  }
+}

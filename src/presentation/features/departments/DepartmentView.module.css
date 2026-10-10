@@ -1,0 +1,91 @@
+/* Over the leaders, in the small type of the line under the heading. */
+.path {
+  margin: -8px 0 8px;
+  font-size: calc(13px * var(--text-scale));
+}
+
+.leaders {
+  margin: 0 0 12px;
+}
+
+/* The warning beside its words, in the muted small type of a note. */
+.note {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  margin: 0 0 12px;
+  font-size: calc(13px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.note svg {
+  flex: none;
+  color: var(--warning);
+}
+
+.below {
+  margin-bottom: 12px;
+}
+
+/* Small and muted, as the Team section's headings are. */
+.heading {
+  margin: 0 0 4px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The name and its total on a line, a 44px target as the Team section's rows are, its text in line with the heading's. */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  width: calc(100% + 12px);
+  min-height: 44px;
+  margin: 0 -6px;
+  padding: 0 6px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* A name to press reads as the panel's links do. */
+.name {
+  color: var(--accent-text);
+  overflow-wrap: anywhere;
+}
+
+/* Beside the name of a department that comes higher up its path too, as in the departments panel. */
+.name svg {
+  margin-left: 6px;
+  vertical-align: -2px;
+  color: var(--warning);
+}
+
+.count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reaching the people listed comes before how they are shown; no gap while there are no tiles yet, only the copy's live region. */
+.contact:has(> div) {
+  margin-bottom: 16px;
+}
+
+/* Underlined rather than tinted, as the panel's links are: the hover tint would lower the accent's contrast in the dark theme. */
+@media (hover: hover) {
+  .row:hover .name {
+    text-decoration: underline;
+  }
+}

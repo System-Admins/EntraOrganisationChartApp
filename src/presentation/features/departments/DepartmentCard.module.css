@@ -1,0 +1,30 @@
+/* Two lines at most, so that every card fits the height the chart of departments gives them all. */
+.name {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: calc(14px * var(--text-scale));
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.line {
+  overflow: hidden;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Chromium clips print text at device pixels and shaves the outer letters, as on a person's card. */
+@media print {
+  .name,
+  .line {
+    --clip-room: min(5px, calc(1px / var(--chart-zoom, 1)));
+
+    margin-inline: calc(-1 * var(--clip-room));
+    padding-inline: var(--clip-room);
+  }
+}

@@ -1,0 +1,44 @@
+/* Small and muted, as the other headings of a team's blocks are, wherever the team is listed. */
+.heading {
+  margin: 0 0 6px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+/* Three tiles to a row, fewer only where a third is too narrow for the longest short label; the spare pixel keeps rounding from dropping the third. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(calc(56px * var(--text-scale) + 10px), calc((100% - 17px) / 3)), 1fr));
+  gap: 8px;
+}
+
+/* The small print under the tiles: why one is missing or stands in for another, and whom each leaves out. */
+.note {
+  margin: 8px 0 0;
+  font-size: calc(12px * var(--text-scale));
+  line-height: 1.4;
+  color: var(--muted-text);
+}
+
+/* The addresses to copy by hand where nothing could copy them. */
+.manual {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* An edge in the secondary text colour: --border is too faint for a field (WCAG 1.4.11). */
+.manual textarea {
+  padding: 6px 8px;
+  font: inherit;
+  font-size: calc(13px * var(--text-scale));
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: 4px;
+  resize: vertical;
+}

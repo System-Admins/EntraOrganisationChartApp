@@ -1,0 +1,73 @@
+/* The controls in a Dialog's content: Settings' and those of the reports it opens, which look like the dialog they open from. */
+.hint {
+  margin: 8px 0 0;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* An edge in the secondary text colour: --border is too faint for a button (WCAG 1.4.11). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Text to copy by hand: About's details, a line each, or a report's addresses where nothing could copy them, and the embed code, which is always shown. */
+.copyByHand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* An edge in the secondary text colour, as the buttons have: --border is too faint for a field (WCAG 1.4.11). */
+.copyByHand textarea {
+  padding: 6px 8px;
+  font: inherit;
+  font-size: calc(13px * var(--text-scale));
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: 4px;
+  resize: vertical;
+}
+
+@media (hover: hover) {
+  .button:hover:not([aria-disabled='true']) {
+    background: var(--hover);
+  }
+
+  /* Filled, not tinted: see --danger in global.css. */
+  .button.danger:hover {
+    color: var(--surface);
+    background: var(--danger);
+  }
+}

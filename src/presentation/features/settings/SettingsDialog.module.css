@@ -1,0 +1,92 @@
+/* The dialog is the shared Dialog's (Dialog.module.css), its sections DialogSection's, and its buttons, hints and fields to copy from DialogControls.module.css's; these are the settings' own. */
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  font-weight: 600;
+}
+
+/* A group that follows another setting's hint, as Display's start choice does, or a note in place of a setting: both are paragraphs. */
+p + .group {
+  margin-top: 16px;
+}
+
+/* Stands in for a choice the host makes, as Teams makes the theme's. */
+.note {
+  margin: 16px 0 0;
+}
+
+/* The whole row is the checkbox's label, which makes it a 44px target; the padding parts labels that wrap. */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.option input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent-text);
+  cursor: inherit;
+}
+
+.count {
+  min-height: 1.4em;
+  margin: 4px 0 0;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.accountName {
+  font-weight: 600;
+}
+
+.accountAddress {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  overflow-wrap: anywhere;
+}
+
+/* The last line of the dialog, parted from the sections as they are from each other, in the hints' size and colour. */
+.credit {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* The accent's text shade, as the support link has it; the name and its icon stay on one line. */
+.creditLink {
+  font-weight: 600;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+.creditLink svg {
+  margin-left: 4px;
+  vertical-align: -2px;
+}

@@ -1,0 +1,507 @@
+/* Two layouts share one DOM: a tree, and an outline below 720px. OrgChartCanvas reads --layout. */
+.viewport {
+  --layout: tree;
+  /* Here rather than on the canvas, so the measuring cards beside it are as wide as the tree's; larger text, wider cards. */
+  --card-width: calc(272px * var(--text-scale));
+
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Firefox makes an overflowing scroller a Tab stop, and main clips anything outside it, so the ring goes inside. */
+.viewport:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Drag-panning (usePan) is mouse-only; touch scrolls natively. */
+@media (hover: hover) and (pointer: fine) {
+  .viewport {
+    cursor: grab;
+  }
+}
+
+.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* At least as large as the viewport so a small chart is centred; grows with the chart so it scrolls. */
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.canvas {
+  --line: 1px solid var(--connector);
+  --gap-x: 16px;
+  --rail-gap: 14px;
+  --forest-gap: 56px;
+
+  flex: none;
+}
+
+/* CardHeightProbe's cards: beside the canvas and out of the flow, so zoom and scroll size don't include them. */
+.probes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+}
+
+.forest,
+.row,
+.stack {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forest {
+  display: flex;
+}
+
+.branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Over the people with one flag (FlagHeading): a tree item as wide as a card, but nobody, so it only folds and unfolds them. */
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: var(--card-width);
+  min-height: 44px;
+  padding: 8px 10px 8px 12px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--warning);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--warning);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.heading svg {
+  flex: none;
+}
+
+.headingText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The end of a page of a long list, standing in for the people it doesn't show yet. */
+.more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--card-width);
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: calc(13px * var(--text-scale));
+  font-weight: 600;
+  color: var(--accent-text);
+  text-align: center;
+  background: var(--surface);
+  border: 1px dashed var(--connector);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* Paper's own words, which the print rules below show. */
+.moreOnPaper,
+.printNotice {
+  display: none;
+}
+
+/* Divided by the chart's zoom, as the cards' rings are, so the ring stays 2px wide and 2px away on screen. */
+.heading:focus-visible,
+.more:focus-visible {
+  outline-width: calc(2px / var(--chart-zoom, 1));
+  outline-offset: calc(2px / var(--chart-zoom, 1));
+}
+
+/* Hover styles would stick after a tap on touch screens. */
+@media (hover: hover) {
+  .heading:hover {
+    border-color: var(--warning);
+  }
+
+  .more:hover {
+    border-color: var(--accent);
+  }
+
+  .more:hover .moreOnScreen {
+    text-decoration: underline;
+  }
+}
+
+@media print, (min-width: 720px) {
+  .stage {
+    width: max-content;
+  }
+
+  .canvas {
+    --gap-y: 22px;
+    --stack-row-gap: 10px;
+    --corner: 5px;
+
+    padding: 32px 32px 64px;
+  }
+
+  .forest {
+    align-items: flex-start;
+    gap: var(--forest-gap);
+  }
+
+  /* Each item draws half of the horizontal bar on either side of its centre plus the drop to its card. */
+  .row {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-top: var(--gap-y);
+  }
+
+  .row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: var(--gap-y);
+    border-left: var(--line);
+  }
+
+  .row > li {
+    position: relative;
+    padding: var(--gap-y) calc(var(--gap-x) / 2) 0;
+  }
+
+  .row > li::before,
+  .row > li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 50%;
+    width: 50%;
+    height: var(--gap-y);
+    border-top: var(--line);
+  }
+
+  .row > li::after {
+    right: auto;
+    left: 50%;
+    border-left: var(--line);
+  }
+
+  .row > li:first-child::before,
+  .row > li:last-child::after {
+    border: 0 none;
+  }
+
+  .row > li:last-child::before {
+    border-right: var(--line);
+    border-radius: 0 var(--corner) 0 0;
+  }
+
+  .row > li:first-child::after {
+    border-radius: var(--corner) 0 0 0;
+  }
+
+  /* Declared last so it wins over :first-child/:last-child: a lone report gets a straight drop. */
+  .row > li:only-child::before {
+    display: none;
+  }
+
+  .row > li:only-child::after {
+    border: 0 none;
+    border-left: var(--line);
+    border-radius: 0;
+  }
+
+  /* Two-column stack of reports without teams: a rail down the middle and a short tick to each card. */
+  .stack {
+    --stack-pad: var(--gap-y);
+
+    display: grid;
+    grid-template-columns: repeat(2, var(--card-width));
+    column-gap: calc(2 * var(--rail-gap));
+    row-gap: var(--stack-row-gap);
+    justify-content: center;
+    padding-top: var(--stack-pad);
+  }
+
+  .stackColumn > .stack {
+    --stack-pad: 0px;
+  }
+
+  .stack > li {
+    position: relative;
+  }
+
+  .stack > li::before {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--stack-row-gap));
+    bottom: 0;
+    border-left: var(--line);
+  }
+
+  .stack > li:nth-child(-n + 2)::before {
+    top: calc(-1 * var(--stack-pad));
+  }
+
+  .stack > li:nth-child(odd)::before {
+    right: calc(-1 * var(--rail-gap) - 1px);
+  }
+
+  .stack > li:nth-child(even)::before {
+    left: calc(-1 * var(--rail-gap));
+  }
+
+  .stack > li:last-child::before,
+  .stack > li:nth-last-child(2):nth-child(odd)::before {
+    bottom: 50%;
+  }
+
+  .stack > li::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: var(--rail-gap);
+    border-top: var(--line);
+  }
+
+  .stack > li:nth-child(odd)::after {
+    right: calc(-1 * var(--rail-gap));
+  }
+
+  .stack > li:nth-child(even)::after {
+    left: calc(-1 * var(--rail-gap));
+  }
+}
+
+/* Outline: reports hang off a rail under their manager's badge. Every rule steps aside while [data-measure] is set. */
+@media screen and (max-width: 719.98px) {
+  .viewport:not([data-measure]) {
+    --layout: outline;
+  }
+
+  .viewport:not([data-measure]) .canvas {
+    --card-width: 100%;
+    --indent: 20px;
+    /* 8px between cards, plus the 10px that the report badge hangs below its card. */
+    --gap-y: 18px;
+    /* Height of the tick into a card: its avatar's centre (3px border + 10px padding + half of 40px). */
+    --tick-y: 33px;
+    --badge-left: calc(var(--indent) / 2);
+    /* Room for a badge that hangs 12px over its card's left edge, plus 4px for its focus ring. */
+    --gutter: 20px;
+
+    flex: 1;
+    min-width: 0;
+    max-width: 560px;
+    padding: 12px 12px 48px var(--gutter);
+    /* Zoom controls are hidden in this layout, so a zoom left over from the wide layout must not apply. */
+    zoom: 1 !important;
+    --chart-zoom: 1 !important;
+    transform: none !important;
+  }
+
+  .viewport:not([data-measure]) .forest {
+    flex-direction: column;
+    gap: var(--gap-y);
+  }
+
+  .viewport:not([data-measure]) .branch {
+    align-items: stretch;
+    min-width: 220px;
+  }
+
+  .viewport:not([data-measure]) .row,
+  .viewport:not([data-measure]) .stack {
+    padding-left: var(--indent);
+  }
+
+  .viewport:not([data-measure]) .row > li,
+  .viewport:not([data-measure]) .stack > li {
+    position: relative;
+    padding-top: var(--gap-y);
+  }
+
+  /* The rail runs from the top of each report to the next one and stops at the last report's tick. */
+  .viewport:not([data-measure]) .row > li::before,
+  .viewport:not([data-measure]) .stack > li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--indent) / -2);
+    border-left: var(--line);
+  }
+
+  .viewport:not([data-measure]) .row > li:last-child::before,
+  .viewport:not([data-measure]) .stack > li:last-child::before {
+    bottom: auto;
+    height: calc(var(--gap-y) + var(--tick-y));
+  }
+
+  .viewport:not([data-measure]) .row > li::after,
+  .viewport:not([data-measure]) .stack > li::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--gap-y) + var(--tick-y));
+    left: calc(var(--indent) / -2);
+    width: calc(var(--indent) / 2);
+    border-top: var(--line);
+  }
+
+  /* Reports without teams join their colleagues' outline; their wrapper draws only the rail through it. */
+  .viewport:not([data-measure]) .row > .stackColumn {
+    padding-top: 0;
+  }
+
+  .viewport:not([data-measure]) .row > .stackColumn::after {
+    display: none;
+  }
+
+  .viewport:not([data-measure]) .stackColumn > .stack {
+    padding-left: 0;
+  }
+
+  /* Show more has no photo: its tick meets the middle of its one line. */
+  .viewport:not([data-measure]) .moreItem {
+    --tick-y: 22px;
+  }
+}
+
+/* The rules that set the tree's width, for measuring it while the outline is on screen. */
+.viewport[data-measure] .forest {
+  gap: var(--forest-gap);
+}
+
+.viewport[data-measure] .row {
+  display: flex;
+}
+
+.viewport[data-measure] .row > li {
+  padding: 0 calc(var(--gap-x) / 2);
+}
+
+.viewport[data-measure] .stack {
+  display: grid;
+  grid-template-columns: repeat(2, var(--card-width));
+  column-gap: calc(2 * var(--rail-gap));
+}
+
+@media print {
+  .viewport {
+    overflow: visible;
+  }
+
+  .stage {
+    min-height: 0;
+  }
+
+  /* Paper shows the pages on screen: a list that goes on ends with the number it leaves out, and the note under the chart says why. */
+  .viewport:has(.more) > .printNotice {
+    display: block;
+    margin: 12px 0 0;
+    font-size: calc(12px * var(--text-scale));
+    color: var(--muted-text);
+  }
+
+  .moreOnScreen {
+    display: none;
+  }
+
+  .moreOnPaper {
+    display: inline;
+  }
+
+  /* Borders print a device pixel or more at any zoom; the words alone keep clear of the shrunk lines. */
+  .heading,
+  .more {
+    border: 0;
+    box-shadow: none;
+  }
+
+  /* Printers never draw a border thinner than a device pixel, so lines are drawn too thick and shrunk back. */
+  .canvas {
+    --line-scale: calc(4 / var(--print-zoom, 1));
+    --line-weight: clamp(1, calc(0.27 / var(--print-zoom, 1)), 8);
+    --line-shrink: calc(var(--line-weight) / var(--line-scale));
+    --line: calc(1px * var(--line-scale)) solid var(--connector);
+
+    padding: 0;
+    zoom: var(--print-zoom, 1) !important;
+    --chart-zoom: var(--print-zoom, 1) !important;
+    transform: none !important;
+  }
+
+  .row::before,
+  .stack > li::before {
+    transform: scaleX(var(--line-shrink));
+    transform-origin: left;
+  }
+
+  /* The rail between the two columns is drawn twice on screen, where both copies cover the same pixels. */
+  .stack > li:nth-child(odd)::before {
+    transform-origin: right;
+  }
+
+  .stack > li:nth-child(even)::before {
+    display: none;
+  }
+
+  .stack > li::after {
+    transform: scaleY(var(--line-shrink));
+    transform-origin: top;
+  }
+
+  /* ::before is the bar over a report, from or to its middle at the row's ends; ::after is the drop to its card. */
+  .row > li::before,
+  .row > li:first-child::before,
+  .row > li:last-child::before {
+    right: 0;
+    left: 0;
+    width: auto;
+    height: 0;
+    border: 0 none;
+    border-top: var(--line);
+    border-radius: 0;
+    transform: scaleY(var(--line-shrink));
+    transform-origin: top;
+  }
+
+  .row > li:first-child::before {
+    left: 50%;
+  }
+
+  /* Up to the far side of the drop, which closes the corner. */
+  .row > li:last-child::before {
+    right: calc(50% - 1px * var(--line-weight));
+  }
+
+  .row > li::after,
+  .row > li:first-child::after,
+  .row > li:last-child::after,
+  .row > li:only-child::after {
+    right: auto;
+    left: 50%;
+    width: 0;
+    border: 0 none;
+    border-left: var(--line);
+    border-radius: 0;
+    transform: scaleX(var(--line-shrink));
+    transform-origin: left;
+  }
+}

@@ -1,0 +1,70 @@
+/* Colours and shapes follow Teams, so people read them without a legend; see PresenceDot.tsx for the marks. */
+.dot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  box-sizing: border-box;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+}
+
+.mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.available {
+  color: var(--presence-mark-dark);
+  background: var(--presence-available);
+}
+
+.busy {
+  background: var(--presence-busy);
+}
+
+/* A red disc with a white bar. */
+.doNotDisturb {
+  background:
+    linear-gradient(var(--presence-mark-light), var(--presence-mark-light)) center / 50% 18% no-repeat,
+    var(--presence-busy);
+}
+
+.away {
+  color: var(--presence-mark-dark);
+  background: var(--presence-away);
+}
+
+/* A hollow ring. */
+.offline {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--presence-offline);
+}
+
+.outOfOffice {
+  color: var(--presence-mark-light);
+  background: var(--presence-out-of-office);
+}
+
+/* Forced colours would make every dot the same outlined circle, so the dots keep their colours and marks. */
+@media (forced-colors: active) {
+  .dot {
+    forced-color-adjust: none;
+    border-color: Canvas;
+  }
+
+  .offline {
+    background: Canvas;
+  }
+}
+
+@media print {
+  .dot {
+    display: none;
+  }
+}

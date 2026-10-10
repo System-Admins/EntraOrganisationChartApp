@@ -1,0 +1,327 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px 0;
+  text-align: center;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.header p {
+  margin: 0;
+}
+
+.name {
+  margin: 10px 0 2px;
+  font-size: calc(18px * var(--text-scale));
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.department {
+  color: var(--muted-text);
+}
+
+.presence {
+  margin-top: 4px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+}
+
+.statusMessage {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+  overflow-wrap: anywhere;
+}
+
+/* Inline, so that a note of several lines wraps as text does, with the icon on its first line. */
+.statusMessage svg {
+  margin-right: 4px;
+  vertical-align: -3px;
+}
+
+.header .flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  color: var(--warning);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 18px 0 8px;
+}
+
+.section {
+  margin-top: 18px;
+}
+
+.sectionTitle {
+  margin: 0 0 6px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+}
+
+.rows {
+  margin: 0;
+}
+
+.row {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+.value {
+  margin: 2px 0 0 22px;
+  overflow-wrap: anywhere;
+}
+
+.link {
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: var(--accent-text);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Reads as text, so its names are 24px a line, not 44px. The Manager row and the cards are the 44px equivalents. */
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  line-height: 24px;
+  list-style: none;
+}
+
+.lineLink {
+  min-width: 24px;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.separator {
+  margin: 0 6px;
+  color: var(--muted-text);
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 8px;
+  align-items: center;
+  width: 100%;
+  margin-left: -4px;
+  padding: 4px;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.person > :first-child {
+  grid-row: span 2;
+}
+
+.personName {
+  font-weight: 600;
+  color: var(--accent-text);
+}
+
+.personTitle {
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* An unlisted person's place, in a list of people or the reporting line: the words of their card, and nothing to press. */
+.unlisted {
+  color: var(--muted-text);
+}
+
+.unlistedPerson {
+  cursor: default;
+}
+
+/* The photo's place, a dashed ring as on the card (EmployeeCard.module.css). */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  color: var(--muted-text);
+  border: 1px dashed var(--muted-text);
+  border-radius: 50%;
+}
+
+/* A row of its own as tall as a person's, so that its 44px target takes no room from the rows around it. */
+.showAll {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* The Team section's blocks, set apart by space rather than rules, under the rule that heads the other sections' first rows. */
+.team {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* Halves of one row while both labels fit on a line: a basis of 0 shares the row equally, and labels kept to one line wrap the buttons instead. */
+.viewActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* An edge in the secondary text colour: --border is too faint for a button (WCAG 1.4.11). The tiles' type size keeps both labels on one row beside a classic scrollbar. */
+.viewButton {
+  flex: 1 1 0;
+  min-height: 44px;
+  padding: 0 6px;
+  font-size: calc(12px * var(--text-scale));
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted-text);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.reply {
+  display: block;
+}
+
+.clamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Plain text, not a link like the Manager row's: the chart has no card for this person to move to. */
+.recordedName {
+  display: block;
+  font-weight: 600;
+}
+
+.note {
+  display: block;
+  font-size: calc(12px * var(--text-scale));
+  color: var(--muted-text);
+}
+
+/* A block, so that the ring it gets as Turn on hands it the focus goes around both its lines. */
+.localTime {
+  display: block;
+}
+
+/* A link is as tall as its text; its 44px target (WCAG 2.5.5) is the pseudo-element reaching down between the rows. */
+.link {
+  position: relative;
+  display: inline-block;
+  min-width: 44px;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: -4px 0 min(0px, 100% - 40px);
+}
+
+.person {
+  min-height: 44px;
+}
+
+/* Hover styles would stick after a tap on touch screens. */
+@media (hover: hover) {
+  .viewButton:hover {
+    background: var(--hover);
+  }
+
+  .link:hover,
+  .lineLink:hover,
+  .showAll:hover {
+    text-decoration: underline;
+  }
+
+  /* Like .link: the hover tint would lower the name's contrast below 4.5:1 in the dark theme. */
+  .person:hover .personName {
+    text-decoration: underline;
+  }
+}
+
+/* In the bottom sheet the avatar stands beside the name, which leaves the sheet's little height to the details. */
+@media screen and (max-width: 719.98px) {
+  .header {
+    flex-direction: row;
+    gap: 12px;
+    padding: 0 40px 0 0;
+    text-align: left;
+  }
+
+  .identity {
+    align-items: flex-start;
+  }
+
+  .name {
+    margin-top: 0;
+  }
+
+  .actions {
+    margin-top: 12px;
+  }
+}
