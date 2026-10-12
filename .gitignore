@@ -4,6 +4,14 @@ coverage
 *.tsbuildinfo
 .swa
 teams/build
+*.sppkg
+orgchart-teams.zip
 .DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea
+.vs
 .env*
 !.env.example

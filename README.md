@@ -137,7 +137,7 @@ Copy one to `public/config.json` and replace the all-zero IDs. The app refuses t
 
 ### 3. Publish
 
-Use the pipeline (below), or deploy from your machine in PowerShell:
+Use the Azure DevOps pipeline or the GitHub workflow (both below), or deploy from your machine in PowerShell:
 
 ```powershell
 $env:SWA_CLI_DEPLOYMENT_TOKEN = az staticwebapp secrets list --name <name> --resource-group <resource group> --query properties.apiKey --output tsv
@@ -159,11 +159,28 @@ Each run publishes three artifacts: `site`, `teams-app` and `sharepoint-app`.
 
 To check pull requests, add the pipeline as a build validation policy on `main`. Those runs build and test but don't deploy.
 
+### GitHub Actions
+
+`.github/workflows/build-and-deploy.yml` does the same on GitHub. It runs on every push to `main`, on pull requests to `main`, and on demand from the **Actions** tab. Changes to the README and `docs/` alone don't start a run.
+
+1. Settings > Secrets and variables > Actions:
+   - Secret `AZURE_STATIC_WEB_APPS_API_TOKEN`: the Static Web App's deployment token.
+   - Variable `SITE_HOST`: the site's host name, such as `orgchart.contoso.com`.
+   - Variable `TEAMS_DEVELOPER` (optional): your organization's name. Teams shows it as the app's developer.
+2. In a fork, open the **Actions** tab and enable workflows. GitHub turns them off in new forks.
+3. Push to `main`, or run **Build and deploy** from the **Actions** tab.
+
+Without `SITE_HOST`, a run only lints, tests and builds. Pull requests build and test but don't deploy or keep artifacts, as they can come from forks.
+
+Each run of `main` publishes three artifacts on its summary page: `site`, `teams-app` and `sharepoint-app`.
+
+To approve each deploy first, add required reviewers to the `production` environment under Settings > Environments.
+
 ## Microsoft Teams
 
 The Teams app opens the deployed site. Its package holds the site's host name and the app registration's client ID, so each organization builds its own.
 
-1. Get the package `orgchart-teams.zip`: the `teams-app` artifact of a pipeline run, or build it yourself. The build needs `auth.clientId` in `public/config.json`:
+1. Get the package `orgchart-teams.zip`: the `teams-app` artifact of a pipeline or workflow run, or build it yourself. The build needs `auth.clientId` in `public/config.json`:
 
    ```
    npm run package:teams -- --host <host> --developer "<organization>"
@@ -172,7 +189,7 @@ The Teams app opens the deployed site. Its package holds the site's host name an
 2. Teams admin center > Teams apps > Manage apps > Actions > **Upload new app**. Upload the zip.
 3. Add the app in Teams: as a personal app for the whole organization, or as a tab in a channel, chat or meeting. A tab can show one department: **Choose people** picks the people at its top.
 
-Upload the package again only when the manifest changes: host, title, accent colour, client ID or developer name. The pipeline can't publish the app: Microsoft Graph lets only a signed-in administrator do that.
+Upload the package again only when the manifest changes: host, title, accent colour, client ID or developer name. Neither the pipeline nor the workflow can publish the app: Microsoft Graph lets only a signed-in administrator do that.
 
 For your own icons, add `teams/color.png` (192x192) and `teams/outline.png` (32x32, white on transparent) before packaging.
 
@@ -185,7 +202,7 @@ There are two ways to show the chart on a SharePoint page:
 
 ### Organization chart web part
 
-1. Get the package `organization-chart.sppkg`: the `sharepoint-app` artifact of a pipeline run, or build it yourself. The build needs Node.js 22:
+1. Get the package `organization-chart.sppkg`: the `sharepoint-app` artifact of a pipeline or workflow run, or build it yourself. The build needs Node.js 22:
 
    ```
    npm ci --prefix sharepoint
