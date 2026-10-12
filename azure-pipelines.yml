@@ -10,6 +10,7 @@ trigger:
     exclude:
       - README.md
       - docs
+      - .github
 
 pool:
   vmImage: ubuntu-latest
